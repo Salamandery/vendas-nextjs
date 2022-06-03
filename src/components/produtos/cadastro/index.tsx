@@ -1,22 +1,27 @@
+import { Produto } from 'app/models/produtos'
+import { useProdutoService } from 'app/services'
 import { Layout, Input, TextArea } from 'components'
 import { NextPage } from 'next'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 const CadastroProdutos: NextPage = () => {
+    const service = useProdutoService();
     const [sku, setSku] = useState('')
-    const [preco, setPreco] = useState('')
+    const [preco, setPreco] = useState(0)
     const [nome, setNome] = useState('')
     const [descricao, setDescricao] = useState('')
 
-    const onSubmit = () => {
-        const produto = {
+    const onSubmit = useCallback(async () => {
+        const produto: Produto = new Produto(
             sku,
             preco,
             nome,
             descricao
-        }
-        console.log(produto)
-    }
+        )
+        
+        service.salvar(produto)
+
+    }, [sku, preco, nome, descricao, service])
 
     return (
         <Layout title="Cadastro de Produtos">
